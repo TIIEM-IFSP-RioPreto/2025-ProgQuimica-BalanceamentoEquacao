@@ -1,4 +1,4 @@
-from balanceamento import massa_atomica, separar_elementos
+from balanceamento import detalhes_elemento, separar_elementos
 
 # Lista para armazenar os reagentes e produtos
 reagentes = []
@@ -35,28 +35,70 @@ print()
 print("--- Quantidade de elementos nos reagentes ---")
 massa_total = 0
 for reagente in reagentes:
-    massa = 0
+    massa_reagente = 0.0
+    calculo_valido = True
+
     elementos = separar_elementos(reagente)
-    for elemento in elementos:
-        if massa_atomica(elemento[0]) is False:
-            print(f"Elemento desconhecido: {elemento[0]}")
-            continue
-        massa += massa_atomica(elemento[0]) * elemento[1]
-        massa_total += massa
-    print(f"{reagente} ({massa:.8f} g/mol): {elementos}")
+    # Se a fórmula for inválida, o resultado de separar_elementos será vazio
+    if not elementos:
+        print(f"Fórmula inválida ou não reconhecida: '{reagente}'")
+        continue
+
+    # Itera sobre cada tupla (símbolo, quantidade)
+    for simbolo, quantidade in elementos:
+        dados_do_elemento = detalhes_elemento(simbolo)
+        if dados_do_elemento is None:
+            print(f"  -> ERRO: Elemento desconhecido: '{simbolo}'")
+            calculo_valido = False
+            break
+
+        if dados_do_elemento.massa_atomica is None:
+            print(f"  -> ERRO: Elemento '{dados_do_elemento.nome}' ({simbolo}) não "
+                  f"possui massa atômica definida.")
+            calculo_valido = False
+            break
+        # Se for válido, acumula a massa do produto atual
+        massa_reagente += dados_do_elemento.massa_atomica * quantidade
+
+    if calculo_valido:
+        massa_total += massa_reagente
+        print(f"{reagente} ({massa_reagente:.6f} g/mol): {elementos}")
+    else:
+        print(f"{reagente} (Massa molar não determinada): {elementos}")
 print(f"Massa total dos reagentes: {massa_total:.8f} g/mol")
 
-massa_total = 0
 print()
 print("--- Quantidade de elementos nos produtos ---")
+massa_total = 0
 for produto in produtos:
-    massa = 0
+    massa_produto = 0.0
+    calculo_valido = True
+
     elementos = separar_elementos(produto)
-    for elemento in elementos:
-        if massa_atomica(elemento[0]) is False:
-            print(f"Elemento desconhecido: {elemento[0]}")
-            continue
-        massa += massa_atomica(elemento[0]) * elemento[1]
-        massa_total += massa
-    print(f"{produto} ({massa:.8f} g/mol): {elementos}")
+    # Se a fórmula for inválida, o resultado de separar_elementos será vazio
+    if not elementos:
+        print(f"Fórmula inválida ou não reconhecida: '{produto}'")
+        continue
+
+    # Itera sobre cada tupla (símbolo, quantidade)
+    for simbolo, quantidade in elementos:
+        dados_do_elemento = detalhes_elemento(simbolo)
+        if dados_do_elemento is None:
+            print(f"  -> ERRO: Elemento desconhecido: '{simbolo}'")
+            calculo_valido = False
+            break
+
+        if dados_do_elemento.massa_atomica is None:
+            print(f"  -> ERRO: Elemento '{dados_do_elemento.nome}' ({simbolo}) não "
+                  f"possui massa atômica definida.")
+            calculo_valido = False
+            break
+        # Se for válido, acumula a massa do produto atual
+        massa_produto += dados_do_elemento.massa_atomica * quantidade
+
+    if calculo_valido:
+        massa_total += massa_produto
+        print(f"{produto} ({massa_produto:.6f} g/mol): {elementos}")
+    else:
+        print(f"{produto} (Massa molar não determinada): {elementos}")
 print(f"Massa total dos produtos: {massa_total:.8f} g/mol")
