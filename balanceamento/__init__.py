@@ -140,9 +140,9 @@ def separar_elementos(formula: str) -> list[tuple[str, int]]:
     import re
     # A expressão regular encontra um padrão de:
     # 1. Uma letra maiúscula ([A-Z])
-    # 2. Opcionalmente, uma letra minúscula ([a-z]*)
+    # 2. Opcionalmente, uma letra minúscula ([a-z]?)
     # 3. Opcionalmente, um ou mais dígitos (\d*)
-    padrao = r"([A-Z][a-z]*)(\d*)"
+    padrao = r"([A-Z][a-z]?)(\d*)"
 
     # re.findall encontrará todas as correspondências do padrão na string
     matches = re.findall(padrao, formula)
