@@ -158,3 +158,21 @@ def separar_elementos(formula: str) -> list[tuple[str, int]]:
         resultado.append((e, quantidade))
 
     return resultado
+
+def calcular_massa(substancia: str) -> Optional[float]:
+    massa_substancia = 0.0
+
+    elementos = separar_elementos(substancia)
+    if not elementos:
+        return None
+
+    for simbolo, quantidade in elementos:
+        dados_do_elemento = detalhes_elemento(simbolo)
+        if dados_do_elemento is None:
+            return None
+        if dados_do_elemento.massa_atomica is None:
+            return None
+
+        massa_substancia += dados_do_elemento.massa_atomica * quantidade
+
+    return massa_substancia
